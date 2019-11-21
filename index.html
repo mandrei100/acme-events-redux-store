@@ -28,24 +28,51 @@ a {
   <body>
     <div id='root'></div>
     <script type='text/babel'>
-      const { createStore, combineReduvers } = Redux;
-      const { HashRouter, Link, Route, Nav } = ReactRouterDOM;
+      const { createStore, combineReducers } = Redux;
+      const { HashRouter, Link, Route } = ReactRouterDOM;
 
-      const fetchEvents = async () => {
-        storeDispatch({type: 'SET_EVENTS', events:((await axios.get('/api/events')).data)})
-      }
 
-      const Nav = connect(()=> {
-        return (
-          <nav>
-            <Link to='/home'>Home</Link>
-            <Link to='/events'>Events ({ events.length })</Link>
-            </nav>
-        )
+      const reducer = combineReducers({
+        events: (state = [], action) => {
+
+
+          if(action.type === "ADD_EVENT"){
+              state=[...state,action.event];
+          }else if(action.type === 'SET_EVENTS'){
+            state=action.events;
+          } 
+          // else if (action.type === 'DELETE_EVENT'){
+          //   state=action.event;
+          // }
+         
+          return state;
+
+
+        }
       })
 
+      const fetchEvents = async () => {
+        store.dispatch({type: 'SET_EVENTS', events:((await axios.get('/api/events')).data)})
+      }
+
+      const addEvent = async () => {
+        store.dispatch({
+          event:
+            ((await axios.post('/api/events')).data),
+            type: 'ADD_EVENT'
+        })
+      }
+
+      const deleteEvent = async () => {
+        store.dispatch({
+          event:
+            (await axios.delete('/api/events/:id')),
+            type: 'DELETE_EVENT'
+        })
+      }
 
       const store = createStore(reducer);
+
 
       const connect = (Component)=> {
         class Connected extends React.Component{
@@ -67,6 +94,36 @@ a {
         }
         return Connected;
       }
+
+      const Home = connect(({events})=> {
+        return (
+          <div>You've got {events.length} events!</div>
+        )
+      })
+
+      const Events = connect(({events})=> {
+        console.log(events);
+        return (
+          <div>
+            <button onClick={addEvent}>Create</button>
+            <ul>
+              {
+                events.map(event=><li key={event.id} onCLick={deleteEvent}>{event.name}</li>)
+              }
+              </ul>
+            </div>
+        )
+      })
+      
+
+      const Nav = connect(({events})=> {
+        return (
+          <nav>
+            <Link to='/home'>Home</Link>
+            <Link to='/events'>Events ({ events.length })</Link>
+            </nav>
+        )
+      })
 
       class App extends React.Component{
         componentDidMount(){
