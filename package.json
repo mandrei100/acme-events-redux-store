@@ -1,0 +1,21 @@
+{
+  "name": "acme-events-redux-store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mandrei100/acme-events-redux-store.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mandrei100/acme-events-redux-store/issues"
+  },
+  "homepage": "https://github.com/mandrei100/acme-events-redux-store#readme"
+}
