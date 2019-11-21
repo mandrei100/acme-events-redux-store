@@ -29,12 +29,24 @@ a {
     <div id='root'></div>
     <script type='text/babel'>
       const { createStore, combineReduvers } = Redux;
-      const { hashRouter, Link, Route } = ReactRouterDOM;
+      const { HashRouter, Link, Route, Nav } = ReactRouterDOM;
 
+      const fetchEvents = async () => {
+        storeDispatch({type: 'SET_EVENTS', events:((await axios.get('/api/events')).data)})
+      }
 
+      const Nav = connect(()=> {
+        return (
+          <nav>
+            <Link to='/home'>Home</Link>
+            <Link to='/events'>Events ({ events.length })</Link>
+            </nav>
+        )
+      })
 
 
       const store = createStore(reducer);
+
       const connect = (Component)=> {
         class Connected extends React.Component{
           constructor(){
@@ -56,7 +68,7 @@ a {
         return Connected;
       }
 
-      class APp extends React.Component{
+      class App extends React.Component{
         componentDidMount(){
           fetchEvents();
         }
@@ -74,7 +86,7 @@ a {
       }
 
 
-      //ReactDOM.render(<App />, document.querySelector('#root'));
+      ReactDOM.render(<App />, document.querySelector('#root'));
 
     </script>
   </body>
